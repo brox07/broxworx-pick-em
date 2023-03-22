@@ -8,7 +8,7 @@ import LogIn from './Components/LogIn';
 import SignUp from './Components/SignUp';
 import PickEm from './Components/PickEm';
 import MLSPickEm from './Components/MLSPickEm';
-// Import other necessary components
+import ResetPassword from './Components/ResetPassword'; // add the new import
 
 function App() {
   return (
@@ -22,6 +22,7 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/pick-em" element={<PickEm />} />
             <Route path="/mls-pick-em" element={<MLSPickEm />} />
+            <Route path="/resetpassword" element={<ResetPassword />} /> // add the new route
           </Routes>
         </div>
       </Router>
