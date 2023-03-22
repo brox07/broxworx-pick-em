@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { useAuth } from '../AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { signUp } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setError('');
       await signUp(email, password);
+      navigate('/login');
     } catch (error) {
       setError('Failed to create an account');
     }
