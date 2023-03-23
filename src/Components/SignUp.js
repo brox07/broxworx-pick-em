@@ -1,31 +1,56 @@
-import React, { useState } from 'react';
-import { useAuth } from '../AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
-import './SignUp.css';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "./SignUp.css";
+import { db } from "../firebase.js";
+import { setDoc, doc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
 const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [name, setName] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [state, setState] = useState("");
+  const [favoriteTeam, setFavoriteTeam] = useState("");
+  const [error, setError] = useState("");
   const [emailValid, setEmailValid] = useState(false);
   const [passwordValid, setPasswordValid] = useState(false);
   const [passwordConfirmValid, setPasswordConfirmValid] = useState(false);
-  const { signUp } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== passwordConfirm) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
     try {
-      setError('');
-      await signUp(email, password);
-      navigate('/login');
+      setError("");
+      const auth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      const user = {
+        name,
+        email,
+        dateOfBirth,
+        phoneNumber,
+        state,
+        favoriteTeam,
+      };
+
+      await setDoc(doc(db, "users", userCredential.user.uid), user);
+
+      console.log("User created with ID: ", userCredential.user.uid);
+      navigate("/");
     } catch (error) {
-      setError('Failed to create an account');
+      console.error("Error creating user:", error);
+      setError("Failed to create an account");
     }
   };
 
@@ -44,6 +69,25 @@ const SignUp = () => {
     setPasswordConfirmValid(e.target.value === password);
   };
 
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  };
+
+  const handleDateOfBirthChange = (e) => {
+    setDateOfBirth(e.target.value);
+  };
+
+  const handlePhoneNumberChange = (e) => {
+    setPhoneNumber(e.target.value);
+  };
+
+  const handleStateChange = (e) => {
+    setState(e.target.value);
+  };
+
+  const handleFavoriteTeamChange = (e) => {
+    setFavoriteTeam(e.target.value);
+  };
 
   return (
     <div className="home">
@@ -80,6 +124,47 @@ const SignUp = () => {
             placeholder="Once more, for luck"
             required
             className={passwordConfirmValid ? "valid" : ""}
+          />
+
+          <label>Name*</label>
+          <input
+            type="text"
+            value={name}
+            onChange={handleNameChange}
+            placeholder="Your name"
+            required
+          />
+
+          <label>Date of Birth*</label>
+          <input
+            type="date"
+            value={dateOfBirth}
+            onChange={handleDateOfBirthChange}
+            required
+          />
+
+          <label>Phone Number</label>
+          <input
+            type="tel"
+            value={phoneNumber}
+            onChange={handlePhoneNumberChange}
+            placeholder="Your phone number"
+          />
+
+          <label>State</label>
+          <input
+            type="text"
+            value={state}
+            onChange={handleStateChange}
+            placeholder="Your state"
+          />
+
+          <label>Favorite Team</label>
+          <input
+            type="text"
+            value={favoriteTeam}
+            onChange={handleFavoriteTeamChange}
+            placeholder="Your favorite team"
           />
 
           <div className="home-buttons">
