@@ -1,43 +1,45 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import './Navigation.css';
+
+import { NavLink } from 'react-router-dom';
 
 const Navigation = () => {
   const { currentUser } = useAuth();
 
   return (
     <nav className="navigation">
-      <Link to="/" className="nav-item">
+      <NavLink exact to="/" className="nav-item" activeClassName="active">
         Home
-      </Link>
-      <Link to="/pick-em" className="nav-item">
+      </NavLink>
+      <NavLink to="/pick-em" className="nav-item" activeClassName="active">
         Pick Em
-      </Link>
-      <Link to="/leaderboard" className="nav-item">
+      </NavLink>
+      <NavLink to="/leaderboard" className="nav-item" activeClassName="active">
         Leaderboard
-      </Link>
+      </NavLink>
       {currentUser ? (
         <>
-          <Link to="/profile" className="nav-item">
+          <NavLink to="/profile" className="nav-item" activeClassName="active">
             Profile
-          </Link>
-          <Link to="/logout" className="nav-item">
+          </NavLink>
+          <NavLink to="/logout" className="nav-item" activeClassName="active">
             Log Out
-          </Link>
+          </NavLink>
         </>
       ) : (
         <>
-          <Link to="/login" className="nav-item">
+          <NavLink to="/login" className="nav-item" activeClassName="active">
             Log In
-          </Link>
-          <Link to="/signup" className="nav-item">
+          </NavLink>
+          <NavLink to="/signup" className="nav-item" activeClassName="active">
             Sign Up
-          </Link>
+          </NavLink>
         </>
       )}
     </nav>
   );
 };
+
 
 export default Navigation;

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./SignUp.css";
+import "./Main.css";
 import { db } from "../firebase.js";
 import { setDoc, doc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
-const SignUp = () => {
+function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -90,96 +91,105 @@ const SignUp = () => {
   };
 
   return (
-    <div className="home">
-      <h1>Sign Up</h1>
-      <h3>Please fill out the form below to create a FREE account.</h3>
-      <div className="form-box">
-        <form onSubmit={handleSubmit}>
-          <label>Email Address</label>
-          <input
-            type="email"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="example@example.com"
-            required
-            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-            className={emailValid ? "valid" : ""}
-          />
+    <div className="main c">
+      <h2 className="header">Sign Up</h2>
+      <p className="m"><strong>Please fill out the form below to register an account.</strong></p>
+      <div className="card">
+        <div className="form-box">
+          <form onSubmit={handleSubmit}>
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Email Address*</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  // // placeholder="example@example.com"
+                  required
+                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                  className={emailValid ? "valid" : ""} />
+              </div>
 
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-            placeholder="Type your password"
-            required
-            className={passwordValid ? "valid" : ""}
-          />
+              <div className="form-group">
+                <label>Password*</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  // placeholder="Type your password"
+                  required
+                  className={passwordValid ? "valid" : ""} />
+              </div>
 
-          <label>Confirm Password</label>
-          <input
-            type="password"
-            value={passwordConfirm}
-            onChange={handlePasswordConfirmChange}
-            placeholder="Once more, for luck"
-            required
-            className={passwordConfirmValid ? "valid" : ""}
-          />
+              <div className="form-group">
+                <label>Confirm Password*</label>
+                <input
+                  type="password"
+                  value={passwordConfirm}
+                  onChange={handlePasswordConfirmChange}
+                  // placeholder="Once more, for luck"
+                  required
+                  className={passwordConfirmValid ? "valid" : ""} />
+              </div>
 
-          <label>Name*</label>
-          <input
-            type="text"
-            value={name}
-            onChange={handleNameChange}
-            placeholder="Your name"
-            required
-          />
+              <div className="form-group">
+                <label>Name*</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={handleNameChange}
+                  // placeholder="Your name"
+                  required />
+              </div>
 
-          <label>Date of Birth*</label>
-          <input
-            type="date"
-            value={dateOfBirth}
-            onChange={handleDateOfBirthChange}
-            required
-          />
+              <div className="form-group">
+                <label>Date of Birth*</label>
+                <input
+                  type="date"
+                  value={dateOfBirth}
+                  onChange={handleDateOfBirthChange}
+                  required />
+              </div>
 
-          <label>Phone Number</label>
-          <input
-            type="tel"
-            value={phoneNumber}
-            onChange={handlePhoneNumberChange}
-            placeholder="Your phone number"
-          />
+              <div className="form-group">
+                <label>Phone Number</label>
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={handlePhoneNumberChange} />
+              </div>
 
-          <label>State</label>
-          <input
-            type="text"
-            value={state}
-            onChange={handleStateChange}
-            placeholder="Your state"
-          />
+              <div className="form-group">
+                <label>State</label>
+                <input
+                  type="text"
+                  value={state}
+                  onChange={handleStateChange} />
+              </div>
 
-          <label>Favorite Team</label>
-          <input
-            type="text"
-            value={favoriteTeam}
-            onChange={handleFavoriteTeamChange}
-            placeholder="Your favorite team"
-          />
+              <div className="form-group">
+                <label>Favorite Team</label>
+                <input
+                  type="text"
+                  value={favoriteTeam}
+                  onChange={handleFavoriteTeamChange} />
+              </div>
+            </div>
 
-          <div className="home-buttons">
-            <button type="submit" className="home-button">
-              Sign Up
-            </button>
+            <div className="home-buttons">
+              <button type="submit" className="home-button">
+                Sign Up
+              </button>
+            </div>
+          </form>
+          <div>
+            {error && <p>{error}</p>}
+            <p className="m">Already have an account? <Link to="/login">Click here to login</Link></p>
           </div>
-        </form>
-        <div>
-          {error && <p>{error}</p>}
-          <p>Already have an account? <Link to="/login">Click here to login</Link></p>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default SignUp;

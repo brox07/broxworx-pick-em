@@ -11,6 +11,7 @@ import Profile from './Components/Profile';
 import PickEm from './Components/PickEm';
 import MLSPickEm from './Components/MLSPickEm';
 import ResetPassword from './Components/ResetPassword'; // add the new import
+import Footer from './Components/Footer'; 
 
 function App() {
   return (
@@ -27,7 +28,9 @@ function App() {
             <Route path="/logout" element={<LogOut />} />
             <Route path="/mls-pick-em" element={<MLSPickEm />} />
             <Route path="/resetpassword" element={<ResetPassword />} /> // add the new route
+            <Route path="/footer" element={<Footer />} /> // add the new route
           </Routes>
+          <Footer />
         </div>
       </Router>
     </AuthProvider>

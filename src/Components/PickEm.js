@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './PickEm.css';
+import './Main.css';
 import Game from './Game';
 import { fetchNFLGames, saveSelections } from './../api'; // Import the fetchNFLGames and saveSelections functions
 
@@ -38,18 +39,22 @@ const PickEm = () => {
 
   return (
     <div className="pick-em">
-      <h1>NFL Pick Em</h1>
-      <p>Select the winners for each game:</p>
-      <div className="game-list">
-        {games.map((game) => (
-          <Game
-            key={game.idEvent}
-            game={game}
-            onSelectWinner={handleSelectWinner} // Pass the function to the Game component
-          />
-        ))}
+      <h2 className='header'>NFL Pick Em</h2>
+      <p className='c m'>Select the winners for each game:</p>
+      <div className='card'>
+        <div className="game-list">
+          {games.map((game) => (
+            <Game
+              key={game.idEvent}
+              game={game}
+              onSelectWinner={handleSelectWinner} // Pass the function to the Game component
+            />
+          ))}
+        </div>
+        <div className='container'>
+          <button className="main-button c" onClick={handleSaveSelections}>Save Selections</button>
+        </div>
       </div>
-      <button className="home-button" onClick={handleSaveSelections}>Save Selections</button> 
     </div>
   );
 };
