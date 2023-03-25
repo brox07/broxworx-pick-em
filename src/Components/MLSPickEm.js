@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import './PickEm.css'; // Reusing the same CSS file from the NFL pick-em page
-import Game from './Game';
-import { fetchMLSGames } from './../api'; // Import the fetchMLSGames function
+import './PickEm/PickEm'; // Reusing the same CSS file from the NFL pick-em page
+import Game from './Game/Game';
+import { fetchMLSGames } from '../services/api'; // Import the fetchMLSGames function
 
 const MLSPickEm = () => {
   const [games, setGames] = useState([]);

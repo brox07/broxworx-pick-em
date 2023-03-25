@@ -1,0 +1,28 @@
+.navigation {
+  display: flex;
+  justify-content: space-around;
+  background-color: #0c7cd8; /* Light blue color */
+  padding: 1rem 0;
+  font-family: 'Montserrat', sans-serif; /* Use Montserrat font for all text */
+  text-transform: uppercase; /* Make all text uppercase */
+}
+
+.nav-item {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-family: 'Oswald', sans-serif; /* Use Oswald font for menu items */
+  padding: 0 0.5rem; /* Add some padding to the menu items */
+}
+
+.nav-item:last-child {
+  border-right: none; /* Remove the divider from the last menu item */
+}
+
+.nav-item.active {
+  background-color: #1a1a1a; /* Dark gray color for active menu item */
+}
+
+.nav-item:hover {
+  color: #ccc;
+}

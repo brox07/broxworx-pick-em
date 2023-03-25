@@ -1,14 +1,18 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { AuthProvider } from './AuthContext';
+import { AuthProvider } from './contexts/AuthContext';
 
-import Navigation from './Components/Navigation';
-import Home from './Components/Home';
-import LogIn from './Components/LogIn';
-import SignUp from './Components/SignUp';
-import PickEm from './Components/PickEm';
-import MLSPickEm from './Components/MLSPickEm';
-// Import other necessary components
+import Navigation from './components/Navigation/Navigation';
+import Home from './components/Home/Home';
+import LogIn from './components/Login-out/LogIn';
+import LogOut from './components/Login-out/LogOut';
+import SignUp from './components/SignUp/SignUp';
+import Profile from './components/Profile/Profile';
+import PickEm from './components/PickEm/PickEm';
+import Leaderboard from './components/Leaderboard/Leaderboard';
+import MLSPickEm from './components/MLSPickEm';
+import ResetPassword from './components/ResetPassword/ResetPassword'; // add the new import
+import Footer from './components/Footer/Footer'; 
 
 function App() {
   return (
@@ -21,8 +25,14 @@ function App() {
             <Route path="/login" element={<LogIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/pick-em" element={<PickEm />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/logout" element={<LogOut />} />
             <Route path="/mls-pick-em" element={<MLSPickEm />} />
+            <Route path="/resetpassword" element={<ResetPassword />} /> // add the new route
+            <Route path="/footer" element={<Footer />} /> // add the new route
           </Routes>
+          <Footer />
         </div>
       </Router>
     </AuthProvider>

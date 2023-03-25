@@ -1,9 +1,12 @@
 import React from 'react';
-
-const navbar = () => {
+import '../PickEm/PickEm.css';
+import '../Main.css';
+function Leaderboard() {
     return (
         <div>
             <h1>leaderboard</h1>
         </div>
     );
 };
+
+export default Leaderboard;
