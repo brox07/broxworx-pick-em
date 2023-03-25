@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./SignUp.css";
-import "./Main.css";
-import { db } from "../firebase.js";
+import "../Main.css";
+import { db } from "../../services/firebase.js";
 import { setDoc, doc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 
