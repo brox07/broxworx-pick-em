@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useAuth } from '../AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import './SignUp.css';
+import '../SignUp/SignUp.css';
 
 const ResetPassword = () => {
     const [email, setEmail] = useState('');

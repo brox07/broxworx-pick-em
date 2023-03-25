@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './PickEm.css';
-import './Main.css';
-import Game from './Game';
-import { fetchNFLGames, saveSelections } from './../api'; // Import the fetchNFLGames and saveSelections functions
+import '../Main.css';
+import Game from '../Game/Game';
+import { fetchNFLGames, saveSelections } from '../../services/api'; // Import the fetchNFLGames and saveSelections functions
 
 
 const PickEm = () => {

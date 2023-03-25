@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../AuthContext';
-import { db } from '../firebase';
+import { useAuth } from '../../contexts/AuthContext';
+import { db } from '../../services/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import './Main.css';
+import '../Main.css';
 
 const Profile = () => {
   const { currentUser } = useAuth();

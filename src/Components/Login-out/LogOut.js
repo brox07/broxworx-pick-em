@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useAuth } from '../AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import './Main.css';
+import '../Main.css';
 
 const LogOut = () => {
   const { logOut } = useAuth();
