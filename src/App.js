@@ -2,17 +2,17 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 
-import Navigation from './components/Navigation/Navigation';
-import Home from './components/Home/Home';
-import LogIn from './components/Login-out/LogIn';
-import LogOut from './components/Login-out/LogOut';
-import SignUp from './components/SignUp/SignUp';
-import Profile from './components/Profile/Profile';
-import PickEm from './components/PickEm/PickEm';
-import Leaderboard from './components/Leaderboard/Leaderboard';
-import MLSPickEm from './components/MLSPickEm';
-import ResetPassword from './components/ResetPassword/ResetPassword'; // add the new import
-import Footer from './components/Footer/Footer'; 
+import Navigation from './Components/Navigation/Navigation';
+import Home from './Components/Home/Home';
+import LogIn from './Components/Login-out/LogIn';
+import LogOut from './Components/Login-out/LogOut';
+import SignUp from './Components/SignUp/SignUp';
+import Profile from './Components/Profile/Profile';
+import PickEm from './Components/PickEm/PickEm';
+import Leaderboard from './Components/Leaderboard/Leaderboard';
+import MLSPickEm from './Components/MLSPickEm';
+import ResetPassword from './Components/ResetPassword/ResetPassword'; // add the new import
+import Footer from './Components/Footer/Footer'; 
 
 function App() {
   return (
