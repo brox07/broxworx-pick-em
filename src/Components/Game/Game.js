@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './Game.css';
 
-const Game = ({ game, onSelectWinner }) => {
-  const [winner, setWinner] = useState(''); // State variable to keep track of the user's selection for this game
+const Game = ({ game, onSelectWinner, selectedWinner }) => {
+  const [winner, setWinner] = useState(selectedWinner || ''); // State variable to keep track of the user's selection for this game
   const homeTeam = game.strHomeTeam;
   const awayTeam = game.strAwayTeam;
   const homeScore = game.intHomeScore;
@@ -26,16 +26,21 @@ const Game = ({ game, onSelectWinner }) => {
     timeZone: 'America/New_York',
   });
 
+  const handleSelectionChange = (e) => {
+    setWinner(e.target.value);
+    onSelectWinner(game.idEvent, e.target.value); // Invoke onSelectWinner function when the user makes a selection
+  };
+
   return (
     <div className="game">
       <div className="team-names">
         <label htmlFor={`away_${game.idEvent}`}>
-          <input type="radio" className="radio-button" id={`away_${game.idEvent}`} name={`winner_${game.idEvent}`} value={awayTeam} checked={winner === awayTeam} onChange={(e) => setWinner(e.target.value)} />
+          <input type="radio" className="radio-button" id={`away_${game.idEvent}`} name={`winner_${game.idEvent}`} value={awayTeam} checked={winner === awayTeam} onChange={handleSelectionChange} key={`${game.idEvent}-${awayTeam.idTeam}-${selectedWinner === awayTeam}`} />
           {awayTeam}
         </label>
         <div className='at-symbol'> @ </div>
         <label htmlFor={`home_${game.idEvent}`}>
-          <input type="radio" className="radio-button" id={`home_${game.idEvent}`} name={`winner_${game.idEvent}`} value={homeTeam} checked={winner === homeTeam} onChange={(e) => setWinner(e.target.value)} />
+          <input type="radio" className="radio-button" id={`home_${game.idEvent}`} name={`winner_${game.idEvent}`} value={homeTeam} checked={winner === homeTeam} onChange={handleSelectionChange} key={`${game.idEvent}-${homeTeam.idTeam}-${selectedWinner === homeTeam}`} />
           {homeTeam}
         </label>
       </div>
