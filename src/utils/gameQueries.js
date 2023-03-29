@@ -12,7 +12,6 @@ export const fetchNFLGames = async (season, week) => {
       snapshot.forEach((doc) => {
         games.push({ id:doc.id, ...doc.data() });
       });
-      console.log(games);
       return games;
     } catch (error) {
       console.error('Error fetching games:', error);

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './Leaderboard.css';
-import { fetchGroupUsers, fetchGroupPicks } from "../../utils/groupQueries";
+import { fetchGroups, fetchGroupUsers, fetchGroupPicks } from "../../utils/groupQueries";
 import { fetchNFLGames } from "../../utils/gameQueries";
 import { calculateScores } from "../../utils/scoreHelpers";
 
 const Leaderboard = () => {
   // input values during dev
-  const groupId = 'dqxvPN91d7PZKyOk9vSz';
+  const groupId = "dqxvPN91d7PZKyOk9vSz";
   const userId = 'HIWTglfuYVNPqkI4fS6u';
   const season = '2022';
   const week = '01';
@@ -17,14 +17,17 @@ const Leaderboard = () => {
     const fetchData = async () => {
       const users = await fetchGroupUsers(groupId);
       const games = await fetchNFLGames(season, week);
-      const picksPromises = users.map((user) => fetchGroupPicks(groupId, user.userId));
+      const picks = await fetchGroupPicks(userId, " " + groupId);
+      const picksPromises = users.map((user) => fetchGroupPicks(user, groupId));
       const picksArray = await Promise.all(picksPromises);
-
       const userPicks = users.map((user, index) => ({
-        userId: user.userId, 
+        userId: userId, 
         picks: picksArray[index],
       }));
 
+      console.log(users);
+      console.log(games);
+      console.log(picks);
       const userScores = calculateScores(users, games, userPicks);
       setScores(userScores);
     };
@@ -46,7 +49,7 @@ const Leaderboard = () => {
         <tbody>
           {Array.isArray(scores) &&
             scores.map((score) => (
-              <tr key={score.userId}>
+              <tr>
                 <td>{score.userId}</td>
                 <td>{score.scores.dailyScore}</td>
                 <td>{score.scores.totalScore}</td>

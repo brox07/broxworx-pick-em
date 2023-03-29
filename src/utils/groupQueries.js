@@ -1,21 +1,52 @@
 import { db } from "../services/firebase";
 
-export function fetchGroupUsers(groupId){
-    const fetchUsers = async () => {
-        const usersSnapshot = await db.collection(`groups/${groupId}/members`).get();
-        const users = usersSnapshot.docs.map(doc => ({userId: doc.id, ...doc.data()}));
-        return users;
-      }
-    let users = fetchUsers();
+export const fetchGroupUsers = async (groupId) => {
+  try {
+    const usersRef = db.collection("groups").doc(groupId);
+    const snapshot = await usersRef.get();
+    
+    let users = [];
+    if (snapshot.exists) {
+      const userData = snapshot.data();
+      users = userData.members;
+    }
     return users;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return null;
+  }
+};
+
+export const fetchGroups = async () => {
+  try {
+    const groupsRef = db.collection("groups");
+    const snapshot = await groupsRef.get();
+    let groups = [];
+    snapshot.forEach((doc) => {
+      const groupData = doc.data();
+      groups.push({ id: doc.id, name: groupData.name });
+    });
+    return groups;
+  } catch (error) {
+    console.log("Error fetching group data", error);
+    return null;
+  }
 }
 
-export function fetchGroupPicks(userId, groupId){
-  const fetchPicks = async () => {
-      const picksSnapshot = await db.collection(`users/${userId}/picks/${groupId}`).get();
-      const picks = picksSnapshot.docs.map(doc => ({userId: doc.id, ...doc.data()}));
-      return picks;
+export const fetchGroupPicks = async (userId, groupId) => {
+  try {    
+    const picksRef = db.collection("users").doc(userId).collection("picks").doc(groupId)
+                    .collection("leagues").doc("nfl-s2022");
+    const snapshot = await picksRef.get();
+    let picks = [];
+    if (snapshot.exists) {
+      const pickData = snapshot.data();
+      picks = pickData.r01;
     }
-  let picks = fetchPicks();
-  return picks;
-}
+    
+    return picks;
+  } catch (error) {
+    console.error(`Error fetching user picks for ${groupId}`, error);
+    return null;
+  }
+};
