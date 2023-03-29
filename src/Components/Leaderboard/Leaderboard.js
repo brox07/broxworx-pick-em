@@ -1,83 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import './Leaderboard.css';
-import { collection, query, getDocs, doc, getDoc } from 'firebase/firestore';
-import { db } from '../../services/firebase';
-import { fetchNFLGames } from '../../services/api';
+import { fetchGroupUsers, fetchGroupPicks } from "../../utils/groupQueries";
+import { fetchNFLGames } from "../../utils/gameQueries";
+import { calculateScores } from "../../utils/scoreHelpers";
 
 const Leaderboard = () => {
-  const [userData, setUserData] = useState([]);
-  const [games, setGames] = useState([]);
-  const [weekId, setWeekId] = useState('01');
+  // input values during dev
+  const groupId = 'dqxvPN91d7PZKyOk9vSz';
+  const userId = 'HIWTglfuYVNPqkI4fS6u';
+  const season = '2022';
+  const week = '01';
 
-  const fetchGamesData = async () => {
-    const gameData = await fetchNFLGames('2022', weekId);
-    if (gameData && gameData.events) {
-      setGames(gameData.events);
-    }
-  };
-
-  const fetchData = async () => {
-    const usersRef = collection(db, 'users');
-    const usersSnapshot = await getDocs(query(usersRef));
-    const usersData = [];
-
-    for (const userDoc of usersSnapshot.docs) {
-      const selectionRef = doc(
-        userDoc.ref,
-        'leagues',
-        'NFL',
-        'seasons',
-        '2022',
-        'weeks',
-        weekId
-      );
-      const selectionSnapshot = await getDoc(selectionRef);
-      if (selectionSnapshot.exists()) {
-        usersData.push({
-          id: userDoc.id,
-          displayName: userDoc.data().name,
-          selections: selectionSnapshot.data(),
-        });
-      } else {
-        usersData.push({
-          id: userDoc.id,
-          displayName: userDoc.data().name,
-          selections: {},
-        });
-      }
-    }
-
-    setUserData(usersData);
-  };
+  const [scores, setScores] = useState([]);
 
   useEffect(() => {
-    fetchGamesData();
-    fetchData();
-  }, [weekId]);
+    const fetchData = async () => {
+      const users = await fetchGroupUsers(groupId);
+      const games = await fetchNFLGames(season, week);
+      const picksPromises = users.map((user) => fetchGroupPicks(groupId, user.userId));
+      const picksArray = await Promise.all(picksPromises);
 
+      const userPicks = users.map((user, index) => ({
+        userId: user.userId, 
+        picks: picksArray[index],
+      }));
+
+      const userScores = calculateScores(users, games, userPicks);
+      setScores(userScores);
+    };
+
+    fetchData();
+  }, [groupId, season, week]);
+  
   return (
     <div className="leaderboard">
-      <h1>Leaderboard</h1>
+      <h2>Leaderboard</h2>
       <table>
         <thead>
           <tr>
-            <th>Users</th>
-            {games.map((game) => (
-              <th key={game.idEvent}>
-                {game.strHomeTeam} vs {game.strAwayTeam}
-              </th>
-            ))}
+            <th>User</th>
+            <th>Daily Score</th>
+            <th>Total Score</th>
           </tr>
         </thead>
         <tbody>
-          {userData.map((user) => (
-            <tr key={user.id}>
-              <td>{user.displayName}</td>
-              {games.map((game) => (
-                <td key={game.idEvent}>{user.selections[game.idEvent]}</td>
-              ))}
-            </tr>
-          ))}
+          {Array.isArray(scores) &&
+            scores.map((score) => (
+              <tr key={score.userId}>
+                <td>{score.userId}</td>
+                <td>{score.scores.dailyScore}</td>
+                <td>{score.scores.totalScore}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
