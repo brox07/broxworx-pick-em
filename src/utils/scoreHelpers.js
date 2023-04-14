@@ -1,55 +1,69 @@
+import { db } from "../services/firebase";
+import { fetchNFLGames } from "./gameQueries";
+import { fetchGroupUsers, fetchUserPicks } from "./groupQueries";
 
-function getWinnerLoser(game) {
-if (game.intHomeScore === null || game.intAwayScore === null) {
-    return { winner: null, loser: null };
-}
+export const fetchScores = async (groupId) => {
+    try {
+        const scoresRef = db.collection("groups").doc(groupId).collection("scores");
+        const snapshot = await scoresRef.get();
 
-if (game.intHomeScore > game.intAwayScore) {
-    return { winner: game.strHomeTeam, loser: game.strAwayTeam };
-} else if (game.intHomeScore < game.intAwayScore) {
-    return { winner: game.strAwayTeam, loser: game.strHomeTeam };
-} else {
-    return { winner: 'tie', loser: 'tie' };
-}
+        let scores = [];
+        snapshot.forEach((doc) => {
+            const scoreData = doc.data();
+            scores.push({ ...scoreData, id: doc.id });
+        })
+
+        return scores;
+    } catch (error) {
+        console.error(`Error fetching scores for group ${groupId}`, error);
+        return null;
+    }
 }
 
 export function isToday(date) {
-const today = new Date();
-const inputDate = new Date(date);
+    const today = new Date();
+    const inputDate = new Date(date);
 
-return (
-    inputDate.getDate() === today.getDate() &&
-    inputDate.getMonth() === today.getMonth() &&
-    inputDate.getFullYear() === today.getFullYear()
-);
+    return (
+        inputDate.getDate() === today.getDate() &&
+        inputDate.getMonth() === today.getMonth() &&
+        inputDate.getFullYear() === today.getFullYear()
+    );
 }
 
-export function calculateScores(users, games, groupPicks) {
-const userScores = [];
+export const calculateScores = async (groupId, league, round) => {
+    const games = await fetchNFLGames(league, round);
+    const users = await fetchGroupUsers(groupId);
+    const resultsRef = db.collection("results").doc(groupId).collection('leagues').doc(league);
 
-for (const user of users) {
-    let dailyScore = 0;
-    let totalScore = 0;
+    const picksPromises = users.map((user) => fetchUserPicks(user, groupId, league)); 
+    const picksArray = await Promise.all(picksPromises);
 
-    for (const gameId in groupPicks[user.userId]) {
-    const game = games.find((game) => game.id === gameId);
-
-    if (!game) continue;
-
-    const { winner, loser } = getWinnerLoser(game);
-
-    if (winner && groupPicks[user.userId][gameId] === winner) {
-        if (isToday(game.strTimestamp)) {
-        dailyScore++;
-        }
-        totalScore++;
-    }
-    }
-
-    userScores.push({ userId: user.userId, scores: { dailyScore, totalScore } });
-}
-
-return userScores;
-}
-
-//const sortedLeaderboard = Object.entries(scores).sort((a, b) => b[1].totalScore - a[1].totalScore);
+    const userPicks = users.map((user, index) => ({
+        userId: user,
+        picks: picksArray[index],
+      }));
+    
+      const scores = userPicks.map((user) => {
+        const correctPicks = user.picks.filter((pick) =>
+          games.some(
+            (game) =>
+              (game.strHomeTeam === pick && game.intHomeScore > game.intAwayScore) ||
+              (game.strAwayTeam === pick && game.intAwayScore > game.intHomeScore)
+          )
+        ).length;
+    
+        return {
+          userId: user.userId,
+          dailyScore: correctPicks,
+        };
+      });
+    
+      // Update the results in the Firestore
+      for (const score of scores) {
+        await resultsRef
+          .collection('round')
+          .doc(round)
+          .set({ [score.userId]: score.dailyScore }, { merge: true });
+      }
+};

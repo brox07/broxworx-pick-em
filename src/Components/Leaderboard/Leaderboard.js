@@ -1,64 +1,59 @@
+// Import necessary libraries and components
 import React, { useState, useEffect } from 'react';
-import './Leaderboard.css';
-import { fetchGroups, fetchGroupUsers, fetchGroupPicks } from "../../utils/groupQueries";
-import { fetchNFLGames } from "../../utils/gameQueries";
-import { calculateScores } from "../../utils/scoreHelpers";
+import { db } from '../../services/firebase'; // Import your Firebase configuration
 
-const Leaderboard = () => {
-  // input values during dev
-  const groupId = "dqxvPN91d7PZKyOk9vSz";
-  const userId = 'HIWTglfuYVNPqkI4fS6u';
-  const season = '2022';
-  const week = '01';
+const groupId = 'dqxvPN91d7PZKyOk9vSz';
+const league = 'nfl-s2022';
+const round = 'r01';
 
-  const [scores, setScores] = useState([]);
+// fetchLeaderboardData function
+async function fetchLeaderboardData(groupId, league, round) {
+  const leaderboardData = [];
+  const groupResultsRef = db.collection('results').doc(groupId).collection('leagues').doc(league).collection('round').doc(round);
+  const resultsSnapshot = await groupResultsRef.get();
+
+  resultsSnapshot.forEach((doc) => {
+    const userData = doc.data();
+    leaderboardData.push({
+      userId: doc.id,
+      dailyScore: userData.dailyScore,
+    });
+  });
+
+  return leaderboardData;
+}
+
+// Leaderboard component
+function Leaderboard({ groupId, league, round }) {
+  const [leaderboardData, setLeaderboardData] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const users = await fetchGroupUsers(groupId);
-      const games = await fetchNFLGames(season, week);
-      const picks = await fetchGroupPicks(userId, " " + groupId);
-      const picksPromises = users.map((user) => fetchGroupPicks(user, groupId));
-      const picksArray = await Promise.all(picksPromises);
-      const userPicks = users.map((user, index) => ({
-        userId: userId, 
-        picks: picksArray[index],
-      }));
-
-      console.log(users);
-      console.log(games);
-      console.log(picks);
-      const userScores = calculateScores(users, games, userPicks);
-      setScores(userScores);
-    };
+    async function fetchData() {
+      const data = await fetchLeaderboardData(groupId, league, round);
+      setLeaderboardData(data);
+    }
 
     fetchData();
-  }, [groupId, season, week]);
-  
+  }, [groupId, league, round]);
+
   return (
-    <div className="leaderboard">
-      <h2>Leaderboard</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Daily Score</th>
-            <th>Total Score</th>
+    <table>
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Daily Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {leaderboardData.map((userScore) => (
+          <tr key={userScore.userId}>
+            <td>{userScore.userId}</td>
+            <td>{userScore.dailyScore}</td>
           </tr>
-        </thead>
-        <tbody>
-          {Array.isArray(scores) &&
-            scores.map((score) => (
-              <tr>
-                <td>{score.userId}</td>
-                <td>{score.scores.dailyScore}</td>
-                <td>{score.scores.totalScore}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </tbody>
+    </table>
   );
-};
+}
 
 export default Leaderboard;

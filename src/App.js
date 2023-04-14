@@ -10,6 +10,7 @@ import SignUp from './components/SignUp/SignUp';
 import Profile from './components/Profile/Profile';
 import PickEm from './components/PickEm/PickEm';
 import Leaderboard from './components/Leaderboard/Leaderboard';
+import PicksDashboard from './components/PicksDashboard/PicksDashboard';
 import ResetPassword from './components/ResetPassword/ResetPassword'; // add the new import
 import Footer from './components/Footer/Footer'; 
 
@@ -24,6 +25,7 @@ function App() {
             <Route path="/login" element={<LogIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/pick-em" element={<PickEm />} />
+            <Route path="/picks-dashboard" element={<PicksDashboard />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/logout" element={<LogOut />} />
