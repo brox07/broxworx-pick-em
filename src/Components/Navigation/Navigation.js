@@ -18,6 +18,9 @@ const Navigation = () => {
       <NavLink to="/leaderboard" className={({ isActive }) => (isActive ? "nav-item active" : "nav-item")}>
         Leaderboard
       </NavLink>
+      <NavLink to="/picks-dashboard" className={({ isActive }) => (isActive ? "nav-item active" : "nav-item")}>
+        Picks Dashboard
+      </NavLink>
       {currentUser ? (
         <>
           <NavLink to="/profile" className={({ isActive }) => (isActive ? "nav-item active" : "nav-item")}>

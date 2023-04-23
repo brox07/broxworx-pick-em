@@ -1,87 +1,59 @@
+// Import necessary libraries and components
 import React, { useState, useEffect } from 'react';
-import './Leaderboard.css';
-import { collection, query, getDocs, doc, getDoc } from 'firebase/firestore';
-import { db } from '../../services/firebase';
-import { fetchNFLGames } from '../../services/api';
+import { db } from '../../services/firebase'; // Import your Firebase configuration
 
-const Leaderboard = () => {
-  const [userData, setUserData] = useState([]);
-  const [games, setGames] = useState([]);
-  const [weekId, setWeekId] = useState('01');
+const groupId = 'dqxvPN91d7PZKyOk9vSz';
+const league = 'nfl-s2022';
+const round = 'r01';
 
-  const fetchGamesData = async () => {
-    const gameData = await fetchNFLGames('2022', weekId);
-    if (gameData && gameData.events) {
-      setGames(gameData.events);
-    }
-  };
+// fetchLeaderboardData function
+async function fetchLeaderboardData(groupId, league, round) {
+  const leaderboardData = [];
+  const groupResultsRef = db.collection('results').doc(groupId).collection('leagues').doc(league).collection('round').doc(round);
+  const resultsSnapshot = await groupResultsRef.get();
 
-  const fetchData = async () => {
-    const usersRef = collection(db, 'users');
-    const usersSnapshot = await getDocs(query(usersRef));
-    const usersData = [];
+  resultsSnapshot.forEach((doc) => {
+    const userData = doc.data();
+    leaderboardData.push({
+      userId: doc.id,
+      dailyScore: userData.dailyScore,
+    });
+  });
 
-    for (const userDoc of usersSnapshot.docs) {
-      const selectionRef = doc(
-        userDoc.ref,
-        'leagues',
-        'NFL',
-        'seasons',
-        '2022',
-        'weeks',
-        weekId
-      );
-      const selectionSnapshot = await getDoc(selectionRef);
-      if (selectionSnapshot.exists()) {
-        usersData.push({
-          id: userDoc.id,
-          displayName: userDoc.data().name,
-          selections: selectionSnapshot.data(),
-        });
-      } else {
-        usersData.push({
-          id: userDoc.id,
-          displayName: userDoc.data().name,
-          selections: {},
-        });
-      }
-    }
+  return leaderboardData;
+}
 
-    setUserData(usersData);
-  };
+// Leaderboard component
+function Leaderboard({ groupId, league, round }) {
+  const [leaderboardData, setLeaderboardData] = useState([]);
 
   useEffect(() => {
-    fetchGamesData();
+    async function fetchData() {
+      const data = await fetchLeaderboardData(groupId, league, round);
+      setLeaderboardData(data);
+    }
+
     fetchData();
-  }, [weekId]);
+  }, [groupId, league, round]);
 
   return (
-    <div className="leaderboard">
-      <h1>Leaderboard</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Users</th>
-            {games.map((game) => (
-              <th key={game.idEvent}>
-                {game.strHomeTeam} vs {game.strAwayTeam}
-              </th>
-            ))}
+    <table>
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Daily Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {leaderboardData.map((userScore) => (
+          <tr key={userScore.userId}>
+            <td>{userScore.userId}</td>
+            <td>{userScore.dailyScore}</td>
           </tr>
-        </thead>
-        <tbody>
-          {userData.map((user) => (
-            <tr key={user.id}>
-              <td>{user.displayName}</td>
-              {games.map((game) => (
-                <td key={game.idEvent}>{user.selections[game.idEvent]}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </tbody>
+    </table>
   );
-};
+}
 
 export default Leaderboard;
