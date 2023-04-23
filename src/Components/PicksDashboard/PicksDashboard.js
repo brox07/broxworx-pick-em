@@ -95,7 +95,7 @@ return (
 
     <h2>Games and Picks</h2>
     <RoundSelector
-      rounds={['r01', 'r02', 'r03', 'r04']} // List of available rounds
+      rounds={['r01', 'r02', 'r03', 'r04', 'r05', 'r06', 'r07', 'r08', 'r09', 'r10', 'r11', 'r12', 'r13', 'r14', 'r15', 'r16', 'r17', 'r18']} // List of available rounds
       selectedRound={selectedRound}
       onChange={(e) => setSelectedRound(e.target.value)}
     />
