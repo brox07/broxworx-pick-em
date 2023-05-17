@@ -11,6 +11,10 @@ const Home = () => {
 
   return (
     <div className="home">
+      <h1>HI ALL! WE ARE STILL UNDER CONSTRUCTION</h1>
+      <h1>WE ONLY PUSHED A PROD VS TO DO SOME TESTING</h1>
+      <br/>
+      <br/>
       <h1>Welcome to Pick 'Em!</h1>
       <p>
         Compete with others to predict the winners of games from multiple leagues!
